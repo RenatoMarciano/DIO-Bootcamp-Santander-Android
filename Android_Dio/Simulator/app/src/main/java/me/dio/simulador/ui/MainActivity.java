@@ -1,5 +1,7 @@
 package me.dio.simulador.ui;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -56,6 +58,28 @@ public class MainActivity extends AppCompatActivity {
     private void setupMatchesList() {
         binding.rvMatches.setHasFixedSize(true);
         binding.rvMatches.setLayoutManager(new LinearLayoutManager(this));
+        findMatchesFromApi();
+    }
+
+    // Atualizar as partidas na ação de swipe.
+    private void setupMatchesRefresh() {
+        binding.fabSimulate.setOnClickListener(view -> {
+            view.animate().rotationBy(360).setDuration(500).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    //TODO Implementar o algoritmo de simulação de partidas.
+                }
+            });
+        });
+    }
+
+    // Criar evento de click e simulação de partidas.
+    private void setupFloatingActionButton() {
+        binding.srlMatches.setOnRefreshListener(this::findMatchesFromApi);
+    }
+
+    private void findMatchesFromApi() {
+        binding.srlMatches.setRefreshing(true);
         matchesApi.getMatches().enqueue(new Callback<List<Match>>() {
             @Override
             public void onResponse(Call<List<Match>> call, Response<List<Match>> response) {
@@ -66,22 +90,17 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     showErrorMessage();
                 }
+                binding.srlMatches.setRefreshing(false);
             }
 
             @Override
             public void onFailure(Call<List<Match>> call, Throwable t) {
                 showErrorMessage();
+                binding.srlMatches.setRefreshing(false);
             }
         });
     }
 
-    private void setupMatchesRefresh() {
-        //TODO Atualizar as partidas na ação de swipe.
-    }
-
-    private void setupFloatingActionButton() {
-        //TODO Criar evento de click e simulação de partidas.
-    }
 
     // Exebir mensagem de Erro
     private void showErrorMessage() {
