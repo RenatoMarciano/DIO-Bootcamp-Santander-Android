@@ -1,6 +1,7 @@
 package me.dio.simulador.ui.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -13,6 +14,7 @@ import java.util.List;
 
 import me.dio.simulador.databinding.MatchItemBinding;
 import me.dio.simulador.domain.Match;
+import me.dio.simulador.ui.DetailActivity;
 
 public class MatchesAdapter extends RecyclerView.Adapter<MatchesAdapter.ViewHolder> {
 
@@ -48,6 +50,12 @@ public class MatchesAdapter extends RecyclerView.Adapter<MatchesAdapter.ViewHold
         if (match.getAwayTeam().getScore() != null) {
             holder.binding.tvAwayTeamScore.setText(String.valueOf(match.getAwayTeam().getScore()));
         }
+
+        holder.itemView.setOnClickListener(view -> {
+            Intent intent = new Intent(context, DetailActivity.class);
+            intent.putExtra(DetailActivity.Extras.MATCH, match);
+            context.startActivity(intent);
+        });
     }
 
     @Override
