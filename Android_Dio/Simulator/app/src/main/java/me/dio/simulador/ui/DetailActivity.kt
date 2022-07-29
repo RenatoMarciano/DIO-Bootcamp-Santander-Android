@@ -2,7 +2,9 @@ package me.dio.simulador.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.bumptech.glide.Glide
 import me.dio.simulador.databinding.ActivityDetailBinding
+import me.dio.simulador.domain.Match
 
 class DetailActivity : AppCompatActivity() {
 
@@ -21,5 +23,14 @@ class DetailActivity : AppCompatActivity() {
         //Configurando o ActionBar
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        loadMatchFromExtra()
+    }
+
+    private fun loadMatchFromExtra() {
+        intent?.extras?.getParcelable<Match>(Extras.MATCH)?.let {
+            Glide.with(this).load(it.place.image).into(binding.ivPlace)
+            supportActionBar?.title = it.place.name
+        }
     }
 }
