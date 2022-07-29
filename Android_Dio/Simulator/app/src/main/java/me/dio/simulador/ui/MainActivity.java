@@ -63,6 +63,11 @@ public class MainActivity extends AppCompatActivity {
 
     // Atualizar as partidas na ação de swipe.
     private void setupMatchesRefresh() {
+        binding.srlMatches.setOnRefreshListener(this::findMatchesFromApi);
+    }
+
+    // Criar evento de click e simulação de partidas.
+    private void setupFloatingActionButton() {
         binding.fabSimulate.setOnClickListener(view -> {
             view.animate().rotationBy(360).setDuration(500).setListener(new AnimatorListenerAdapter() {
                 @Override
@@ -78,12 +83,9 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             });
+            // A linha abaixo é para força um erro e para aparecer lá no Firebase Crashlytics
+            // throw new RuntimeException("Teste Crashlytics");
         });
-    }
-
-    // Criar evento de click e simulação de partidas.
-    private void setupFloatingActionButton() {
-        binding.srlMatches.setOnRefreshListener(this::findMatchesFromApi);
     }
 
     private void findMatchesFromApi() {
