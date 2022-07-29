@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerViewAccessibilityDelegate;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
+import java.util.Random;
 
 import me.dio.simulador.R;
 import me.dio.simulador.data.MatchesApi;
@@ -30,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
     private MatchesApi matchesApi;
-    private RecyclerView.Adapter matchesAdapter;
+    private MatchesAdapter matchesAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -66,8 +67,16 @@ public class MainActivity extends AppCompatActivity {
         binding.fabSimulate.setOnClickListener(view -> {
             view.animate().rotationBy(360).setDuration(500).setListener(new AnimatorListenerAdapter() {
                 @Override
+                // Implementar o algoritmo de simulação de partidas.
                 public void onAnimationEnd(Animator animation) {
-                    //TODO Implementar o algoritmo de simulação de partidas.
+
+                    Random random = new Random();
+                    for (int i = 0; i < matchesAdapter.getItemCount(); i++){
+                        Match match = matchesAdapter.getMatches().get(i);
+                        match.getHomeTeam().setScore(random.nextInt(match.getHomeTeam().getStars() + 1));
+                        match.getAwayTeam().setScore(random.nextInt(match.getAwayTeam().getStars() + 1));
+                        matchesAdapter.notifyItemChanged(i);
+                    }
                 }
             });
         });
@@ -100,7 +109,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
 
     // Exebir mensagem de Erro
     private void showErrorMessage() {
