@@ -37,11 +37,19 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
         holder.binding.tvTitle.setText(news.getTitle());
         holder.binding.tvDescription.setText(news.getDescription());
         Picasso.get().load(news.getImage()).into(holder.binding.ivTnumbnail);
+
+        // Implementação de funcionalidade de "Abrir Link":
         holder.binding.btOpenLink.setOnClickListener(view -> {
-            // função do botão direcionando para um link da internet
             Intent i = new Intent(Intent.ACTION_VIEW);
             i.setData(Uri.parse(news.getLink()));
             holder.itemView.getContext().startActivity(i);
+        });
+        // Implementação de funcionalidade de "Compartilhar":
+        holder.binding.ivShare.setOnClickListener(view -> {
+            Intent i = new Intent(Intent.ACTION_SEND);
+            i.setType("text/plain");
+            i.putExtra(Intent.EXTRA_SUBJECT, news.getTitle());
+            holder.itemView.getContext().startActivity(Intent.createChooser(i, "Share"));
         });
 
     }
