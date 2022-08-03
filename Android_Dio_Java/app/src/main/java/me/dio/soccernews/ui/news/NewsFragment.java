@@ -1,17 +1,18 @@
 package me.dio.soccernews.ui.news;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.room.Room;
 
+import me.dio.soccernews.data.remote.local.AppDatabase;
 import me.dio.soccernews.databinding.FragmentNewsBinding;
 import me.dio.soccernews.ui.adapters.NewsAdapter;
 
@@ -19,6 +20,7 @@ import me.dio.soccernews.ui.adapters.NewsAdapter;
 public class NewsFragment extends Fragment {
 
     private FragmentNewsBinding binding;
+    private AppDatabase db;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         NewsViewModel homeViewModel = new ViewModelProvider(this).get(NewsViewModel.class);
@@ -26,12 +28,15 @@ public class NewsFragment extends Fragment {
         binding = FragmentNewsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        db = Room.databaseBuilder(getContext(), AppDatabase.class, "soccer-news")
+                .allowMainThreadQueries()
+                .build();
+
         binding.rvNews.setLayoutManager(new LinearLayoutManager(getContext()));
         homeViewModel.getNews().observe(getViewLifecycleOwner(), news -> {
-            binding.rvNews.setAdapter(new NewsAdapter(news, view -> {
-                Log.d("Minha_Tag", "Clicou!!");
+            binding.rvNews.setAdapter(new NewsAdapter(news, updatedNews -> {
+                db.newsDao().insert(updatedNews);
             }));
-
         });
         return root;
     }

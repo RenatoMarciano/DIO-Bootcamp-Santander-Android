@@ -1,13 +1,17 @@
 package me.dio.soccernews.ui.news;
 
+import android.app.Application;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+import androidx.room.Room;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import me.dio.soccernews.data.remote.SoccerNewsApi;
+import me.dio.soccernews.data.remote.local.AppDatabase;
 import me.dio.soccernews.domain.News;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -26,8 +30,8 @@ public class NewsViewModel extends ViewModel {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         api  = retrofit.create(SoccerNewsApi.class);
-        this.findNews();
 
+        this.findNews();
     }
 
     private void findNews() {
@@ -43,6 +47,7 @@ public class NewsViewModel extends ViewModel {
 
             @Override
             public void onFailure(Call<List<News>> call, Throwable t) {
+                t.printStackTrace();
                 // TODO Pensar em uma estratégia de tratamento de erros.
             }
         });
